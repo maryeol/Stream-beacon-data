@@ -56,5 +56,5 @@ while (datetime.now()-t1).seconds <= 5:  #run for 5 seconds
 
 df=pd.DataFrame.from_dict(dict, orient="index", columns= ['URl', 'Rssi', 'Mac', 'Time'])
 print(df[['URl', 'Rssi']])
-print("hello world!")
+
 sock.close()
