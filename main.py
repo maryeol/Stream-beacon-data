@@ -9,9 +9,28 @@ index = 0
 index1 = 0
 
 def calculate(df):
-    idf = df.groupby('Mac').mean()
-    idf['Distance'] = pow(10, ((-69 - idf['Rssi']) / (10 * 2)))
-    print(idf)
+    df['Distance'] = pow(10, ((-69 - df['Rssi']) / (10 * 3)))
+    idf = df[['Mac', 'Distance']]
+    final_df = idf.groupby('Mac').mean()
+    print(final_df)
+
+    #To Calculate with last 9 numbers
+    #init_df=df[-9:]
+    #print(init-df)
+    #init_df['Distance'] =  pow(10, ((-69 - init_df['Rssi']) / (10 * 2)))
+    #print(init-df)
+    #init_df=init_df[['Mac', 'Distance']]
+    #final_df=init_df.groupby('Mac').mean()
+    #print(final_df)
+
+
+def cleardataframe(df):
+    #clear data from 60 sec el kdom
+    t1 = datetime.now()
+    t1 = t1.time().second
+    index_names = df[t1 - df['Time'].time().second < 60].index
+    df.drop(index_names, inplace=True)
+    print(df)
 
 class beacon:
     url: str
@@ -66,4 +85,5 @@ while (datetime.now()-t1).seconds <= 5:  #run for 5 seconds
 #df=pd.DataFrame.from_dict(dict, orient="index", columns= ['URl', 'Rssi', 'Mac', 'Time'])
 #print(df[['Mac', 'Rssi']])
 calculate(df)
+#cleardataframe(df)
 sock.close()
