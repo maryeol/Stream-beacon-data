@@ -1,3 +1,4 @@
+import os
 import socket
 import json
 import pandas as pd
@@ -9,7 +10,7 @@ index = 0
 index1 = 0
 
 def calculate(df):
-    df['Distance'] = pow(10, ((-69 - df['Rssi']) / (10 * 3)))
+    df['Distance'] = pow(10, ((-69 - df['Rssi']) / (10 * 2)))
     idf = df[['Mac', 'Distance']]
     final_df = idf.groupby('Mac').mean()
     print(final_df)
@@ -30,6 +31,7 @@ def cleardataframe(df):
     t1 = t1.time().second
     index_names = df[t1 - df['Time'].time().second < 60].index
     df.drop(index_names, inplace=True)
+    os.system('clear')
     print(df)
 
 class beacon:
@@ -55,9 +57,9 @@ sock.bind((UDP_IP, UDP_PORT))
 dict = {}
 i = 0
 
-t1 = datetime.now()
-while (datetime.now()-t1).seconds <= 5:  #run for 5 seconds
-#while True:
+#t1 = datetime.now()
+#while (datetime.now()-t1).seconds <= 5:  #run for 5 seconds
+while True:
     data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
     # print("Type:", type(data))
     # print("received message: %s" % data)
@@ -77,13 +79,15 @@ while (datetime.now()-t1).seconds <= 5:  #run for 5 seconds
         i = i+1
 
         df=pd.DataFrame.from_dict(dict, orient="index", columns= ['URl', 'Rssi', 'Mac', 'Time'])
-        print(df[['Rssi', 'Mac']])
+        os.system('clear')
+        #print(df[['Rssi', 'Mac']])
+        calculate(df)
 
     except Exception as e:
         print('exception :', data.decode(), e)
 
 #df=pd.DataFrame.from_dict(dict, orient="index", columns= ['URl', 'Rssi', 'Mac', 'Time'])
 #print(df[['Mac', 'Rssi']])
-calculate(df)
+#calculate(df)
 #cleardataframe(df)
 sock.close()
