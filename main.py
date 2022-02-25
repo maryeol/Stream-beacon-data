@@ -12,8 +12,10 @@ index = 0
 index1 = 0
 
 def calculate(init_df):
-    init_df['Distance'] = pow(10, ((-69 - init_df['Rssi']) / (16)))
+    #init_df['Distance'] = pow(10, ((-69 - init_df['Rssi']) / (16)))
+    init_df['Distance'] = (0.882909233) * pow((init_df['Rssi'] / -58), 4.57459326) + 0.045275821
     init_df = init_df[['Mac', 'Distance']]
+    init_df = init_df[-20:]
     final_df = init_df.groupby('Mac').mean()
     print(final_df)
 
