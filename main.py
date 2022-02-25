@@ -1,6 +1,8 @@
 import os
 import socket
 import json
+from time import sleep
+
 import pandas as pd
 from datetime import datetime
 
@@ -9,27 +11,19 @@ UDP_PORT = 5015
 index = 0
 index1 = 0
 
-def calculate(df):
-    df['Distance'] = pow(10, ((-69 - df['Rssi']) / (10 * 2)))
-    idf = df[['Mac', 'Distance']]
-    final_df = idf.groupby('Mac').mean()
+def calculate(init_df):
+    init_df['Distance'] = pow(10, ((-69 - init_df['Rssi']) / (16)))
+    init_df = init_df[['Mac', 'Distance']]
+    final_df = init_df.groupby('Mac').mean()
     print(final_df)
 
-    #To Calculate with last 9 numbers
-    #init_df=df[-9:]
-    #print(init-df)
-    #init_df['Distance'] =  pow(10, ((-69 - init_df['Rssi']) / (10 * 2)))
-    #print(init-df)
-    #init_df=init_df[['Mac', 'Distance']]
-    #final_df=init_df.groupby('Mac').mean()
-    #print(final_df)
 
 
 def cleardataframe(df):
-    #clear data from 60 sec el kdom
+    #clear data from 50 sec el kdom
     t1 = datetime.now()
     t1 = t1.time().second
-    index_names = df[t1 - df['Time'].time().second < 60].index
+    index_names = df[t1 - df['Time'].time().second < 50].index
     df.drop(index_names, inplace=True)
     os.system('clear')
     print(df)
@@ -80,8 +74,8 @@ while True:
 
         df=pd.DataFrame.from_dict(dict, orient="index", columns= ['URl', 'Rssi', 'Mac', 'Time'])
         os.system('clear')
-        #print(df[['Rssi', 'Mac']])
         calculate(df)
+        #cleardataframe(df)
 
     except Exception as e:
         print('exception :', data.decode(), e)
