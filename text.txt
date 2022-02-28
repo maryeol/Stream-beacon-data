@@ -1,22 +1,7 @@
-36   -64  ca:8f:d0:86:5f:9e
-Mac                Distance
-ca:8f:d0:86:5f:9e  0.539852
-db:b9:37:66:db:d1  2.266321
-------------------------------------
-37   -64  ca:8f:d0:86:5f:9e
-                   Distance
-Mac
-ca:8f:d0:86:5f:9e  0.545292
-db:b9:37:66:db:d1  2.266321
--------------------------------------
-38   -58  ca:8f:d0:86:5f:9e
-                   Distance
-Mac
-ca:8f:d0:86:5f:9e  0.541017
-db:b9:37:66:db:d1  2.266321
--------------------------------------
-39   -64  ca:8f:d0:86:5f:9e
-                   Distance
-Mac
-ca:8f:d0:86:5f:9e  0.546026
-db:b9:37:66:db:d1  2.266321
+1/  initilize 3 device points  ; coordinate 0,0
+2/  initilize array of 3 
+3/ fill the array D
+4/ create 3 circles : center = device points , r = distance calculated D[i]
+5/ while true : you should find intersection 
+    if no intersection , should increase the circle who has larger r
+    find intersection point between the circles

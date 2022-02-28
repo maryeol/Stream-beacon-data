@@ -5,6 +5,8 @@ RSSI_TO_DISTANCE_A = 60
 RSSI_TO_DISTANCE_N = 3.3
 
 class Point:
+    x: float
+    y: float
     def __init__(self,x_init,y_init):
         self.x = x_init
         self.y = y_init
@@ -15,14 +17,21 @@ class Point:
 
 
 class PointVector:
+    p1: Point
+    p2: Point
     def __init__(self, p1, p2):
-        self.x = Point(p1.x, p1.y)
-        self.y = Point(p2.x, p2.y)
+        self.p1 = Point(p1.x, p1.y)
+        self.p2 = Point(p2.x, p2.y)
 
 class Circle:
+    r: float
     def __init__(self, center, r):
         self.center = Point(center.x, center.y)
         self.r = r
+
+    def __repr__(self):
+        return "".join(["Circle(", str(self.center), ", r = ", str(self.r), ")"])
+
 
 
 #Method to calculate Distance to Signal strength
@@ -32,8 +41,7 @@ def calculate(rssi):
 
 #Get the distance between two points
 def getDistanceBetweenTwoPoint(a, b):
-    return sqrt((a.x-b.x)**2+(a.y-b.y)**2)
-
+    return math.sqrt(math.pow(a.x - b.x, 2) + math.pow(a.y - b.y, 2))
 
 #Determine if the two circles intersect
 def isTwoCircleIntersect(c1, c2):

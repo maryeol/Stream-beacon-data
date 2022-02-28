@@ -3,7 +3,7 @@ import math
 from matplotlib import pyplot as plt
 
 def getDistanceBetweenTwoPoint(a, b):
-    return sqrt((a.x-b.x)**2+(a.y-b.y)**2)
+    return math.sqrt((a.x-b.x)**2+(a.y-b.y)**2)
 
 def isTwoCircleIntersect(c1, c2):
     return getDistanceBetweenTwoPoint(c1.center, c2.center) < c1.r + c2.r
@@ -77,4 +77,10 @@ if intersections is not None:
     plt.plot([i_x3, i_x4], [i_y3, i_y4], '.', color='blue')
 
 plt.gca().set_aspect('equal', adjustable='box')
-plt.show()
+#plt.show()
+
+l = []
+l.insert(0 , "a")
+l.pop(0)
+l.insert(0,"b")
+print(l)
