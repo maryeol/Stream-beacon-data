@@ -19,17 +19,17 @@ dict = {}
 i=0
 
 distance_list = []
-p1 = tools.Point(0,0)
-p2 = tools.Point(1,2) #to change
-p3 = tools.Point(1,3) #to change
+p1 = tools.Point(0,0) # coordinate of ESP 1
+p2 = tools.Point(1,3) # coordinate of ESP 2
+p3 = tools.Point(5,2) # coordinate of ESP 3
 TRY_DISTANCE_STEP = 0.01;
 
 def calculate(init_df):
     #init_df['Distance'] = pow(10, ((-69 - init_df['Rssi']) / (16)))
     init_df['Distance'] = (0.882909233) * pow((init_df['Rssi'] / -58), 4.57459326) + 0.045275821
-    init_df = init_df[['Mac', 'Distance']]
+    init_df = init_df[['IP', 'Mac', 'Distance']]
     init_df = init_df[-20:]
-    final_df = init_df.groupby('Mac').mean()
+    final_df = init_df.groupby(['IP', 'Mac']).mean()
     return final_df
 
 def cleardataframe(df):
@@ -78,13 +78,14 @@ while True:
         b_time = beac.time
         b_ip = beac.ip
         b_data = []
-        b_data.extend([b_url,b_rssi,b_mac,b_time])
+        b_data.extend([b_ip,b_url,b_rssi,b_mac,b_time])
 
         dict[i] = b_data
         i = i+1
 
-        df=pd.DataFrame.from_dict(dict, orient="index", columns= ['URl', 'Rssi', 'Mac', 'Time'])
+        df=pd.DataFrame.from_dict(dict, orient="index", columns=['IP', 'URl', 'Rssi', 'Mac', 'Time'])
         os.system('clear')
+        print(df)
         df = calculate(df)
         #cleardataframe(df)
         print(df)
@@ -154,7 +155,7 @@ while True:
         plt.plot([final_point.x , final_point.y], '.', color="pink")
 
         plt.gca().set_aspect('equal', adjustable='box')
-        plt.show()
+        #plt.show()
 
     except Exception as e:
         print('exception :', data.decode(), e)
