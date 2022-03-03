@@ -20,8 +20,8 @@ i=0
 
 distance_list = []
 p1 = tools.Point(0,0) # coordinate of ESP 1
-p2 = tools.Point(1,3) # coordinate of ESP 2
-p3 = tools.Point(5,2) # coordinate of ESP 3
+p2 = tools.Point(2,0) # coordinate of ESP 2
+#p3 = tools.Point(5,2) # coordinate of ESP 3
 TRY_DISTANCE_STEP = 0.01;
 
 def calculate(init_df):
@@ -95,18 +95,18 @@ while True:
 
         circle1 = tools.Circle(p1, distance_list[0])
         circle2 = tools.Circle(p2, distance_list[1])
-        circle3 = tools.Circle(p3, distance_list[2])
+        #circle3 = tools.Circle(p3, distance_list[2])
 
         circle11 = plt.Circle((p1.x, p1.y), circle1.r, color='b', fill=False)
         circle22 = plt.Circle((p1.x, p1.y), circle2.r, color='b', fill=False)
-        circle33 = plt.Circle((p1.x, p1.y), circle3.r, color='b', fill=False)
+        #circle33 = plt.Circle((p1.x, p1.y), circle3.r, color='b', fill=False)
 
         fig, ax = plt.subplots()
         ax.set_xlim((-10, 10))
         ax.set_ylim((-10, 10))
         ax.add_artist(circle11)
         ax.add_artist(circle22)
-        ax.add_artist(circle33)
+        #ax.add_artist(circle33)
 
         if tools.isTwoCircleIntersect(circle1, circle2):
             if distance_list[0] > distance_list[1]:
@@ -114,23 +114,23 @@ while True:
             else:
                 circle2.r += TRY_DISTANCE_STEP
 
-        if tools.isTwoCircleIntersect(circle1, circle3):
-            if circle1.r > circle3.r and circle2.r > circle3.r:
-                circle1.r += TRY_DISTANCE_STEP
-                circle2.r += TRY_DISTANCE_STEP
-            else:
-                circle3.r += TRY_DISTANCE_STEP
-
-        if tools.isTwoCircleIntersect(circle2, circle3):
-            if circle2.r > circle3.r and circle1.r > circle3.r:
-                circle1.r += TRY_DISTANCE_STEP
-                circle2.r += TRY_DISTANCE_STEP
-            else:
-                circle3.r += TRY_DISTANCE_STEP
+        # if tools.isTwoCircleIntersect(circle1, circle3):
+        #     if circle1.r > circle3.r and circle2.r > circle3.r:
+        #         circle1.r += TRY_DISTANCE_STEP
+        #         circle2.r += TRY_DISTANCE_STEP
+        #     else:
+        #         circle3.r += TRY_DISTANCE_STEP
+        #
+        # if tools.isTwoCircleIntersect(circle2, circle3):
+        #     if circle2.r > circle3.r and circle1.r > circle3.r:
+        #         circle1.r += TRY_DISTANCE_STEP
+        #         circle2.r += TRY_DISTANCE_STEP
+        #     else:
+        #         circle3.r += TRY_DISTANCE_STEP
 
         temp1 = tools.getIntersectionPointsOfTwoIntersectCircle(circle1, circle2)
-        temp2 = tools.getIntersectionPointsOfTwoIntersectCircle(circle2, circle3)
-        temp3 = tools.getIntersectionPointsOfTwoIntersectCircle(circle3, circle1)
+        # temp2 = tools.getIntersectionPointsOfTwoIntersectCircle(circle2, circle3)
+        # temp3 = tools.getIntersectionPointsOfTwoIntersectCircle(circle3, circle1)
 
 
         # The point where the intersection of the two circles of 1 and 2 takes y > 0
@@ -140,19 +140,21 @@ while True:
             resultPoint1 = p2
 
         #The intersection of 2, 3 and 2 circles takes the mean of the two
-        resultPoint2 = tools.Point(max(temp2.p1.x, temp2.p2.x), max(temp2.p1.y, temp2.p2.y))
+        #resultPoint2 = tools.Point(max(temp2.p1.x, temp2.p2.x), max(temp2.p1.y, temp2.p2.y))
 
-        plt.plot([resultPoint1.x, resultPoint2.x], [resultPoint1.y, resultPoint2.y], '.', color='green')
+        #plt.plot([resultPoint1.x, resultPoint2.x], [resultPoint1.y, resultPoint2.y], '.', color='green')
 
         #3, 1 the intersection of the two circles takes the point where x > 0
-        if temp3.p1.x > 0:
-            resultPoint3 = tools.Point(temp3.p1.x, temp3.p1.y)
-        else:
-            resultPoint3 = tools.Point(temp3.p2.x, temp3.p2.y)
+        # if temp3.p1.x > 0:
+        #     resultPoint3 = tools.Point(temp3.p1.x, temp3.p1.y)
+        # else:
+        #     resultPoint3 = tools.Point(temp3.p2.x, temp3.p2.y)
 
-        final_point = tools.getCenterOfThreePoint(resultPoint1, resultPoint2 , resultPoint3)
-        print("coordinate of final point: ", final_point)
-        plt.plot([final_point.x , final_point.y], '.', color="pink")
+        #final_point = tools.getCenterOfThreePoint(resultPoint1, resultPoint2 , resultPoint3)
+        #print("coordinate of final point: ", final_point)
+        print("coordinate of final point: ", temp1)
+
+        plt.plot([temp1.x , temp1.y], '.', color="pink")
 
         plt.gca().set_aspect('equal', adjustable='box')
         #plt.show()
