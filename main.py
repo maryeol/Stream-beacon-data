@@ -8,7 +8,7 @@ from datetime import datetime
 from matplotlib import pyplot as plt
 import tools
 
-UDP_IP = "192.168.162.66"
+UDP_IP = "192.168.162.129"
 UDP_PORT = 5015
 index = 0
 index1 = 0
@@ -21,24 +21,28 @@ distance_list = []
 p1 = tools.Point(0,0) # coordinate of ESP 1
 p2 = tools.Point(1,3) # coordinate of ESP 2
 p3 = tools.Point(5,2) # coordinate of ESP 3
-TRY_DISTANCE_STEP = 0.01;
+TRY_DISTANCE_STEP = 0.01
 
-def avgrrsi(init_df):
+def avgrrsi(init_df , ip , mac):
     init_df = init_df[['IP', 'Mac', 'Rssi']]
     init_df = init_df[-20:]
     final_df = init_df.groupby(['IP', 'Mac']).mean()
-    return final_df
+    final_df = final_df.loc[(ip,mac)]
+    print(final_df['Rssi'])
+    return final_df['Rssi']
 
-def extractavgrssi (init_df , ip , mac):
-    final_df = init_df.loc[init_df['IP'] == ip]
-    final_df = init_df.loc[init_df['Mac'] == mac]
-    #print(final_df['Rssi'].values[0])
-    return final_df['Rssi'].values[0]
+# def extractavgrssi (init_df , ip , mac):
+#     print(init_df)
+#     print(type(init_df))
+#     print(init_df['IP'])
+#     final_df = init_df.loc[init_df['IP'] == ip]
+#     final_df = init_df.loc[init_df['Mac'] == mac]
+#     return final_df['Rssi'].values[0]
 
 def calculate(init_df):
     #init_df['Distance'] = pow(10, ((-69 - init_df['Rssi']) / (16)))
     init_df['Distance'] = (0.882909233) * pow((init_df['Rssi'] / -58), 4.57459326) + 0.045275821
-    init_df = init_df[['IP', 'Mac', 'Distance' , 'Rssi']]
+    init_df = init_df[['IP', 'Mac', 'Distance']]
     init_df = init_df[-20:]
     final_df = init_df.groupby(['IP', 'Mac']).mean()
     return final_df
@@ -97,22 +101,31 @@ while True:
         if b_mac in list_esp:
             continue
 
-        # calculate avg rssi and filter
-        average_rssi_data_frame = avgrrsi(df)
-        avg_rssi_val = extractavgrssi(average_rssi_data_frame, b_ip, b_mac)
-
-        if abs(b_rssi - avg_rssi_val) > 5:
-            continue
-
         dict[i] = b_data
         i = i+1
 
-        df=pd.DataFrame.from_dict(dict, orient="index", columns=['IP', 'URl', 'Rssi', 'Mac', 'Time'])
+        df = pd.DataFrame.from_dict(dict, orient="index", columns=['IP', 'URl', 'Rssi', 'Mac', 'Time'])
         os.system('clear')
+
+        #calculate avg rssi and filter
+        avg_rssi_val = avgrrsi(df, b_ip, b_mac)
+
         print(df)
+        print(avg_rssi_val)
+
+        if (abs(b_rssi - avg_rssi_val) > 5) and (i > 10):
+            print(b_rssi - avg_rssi_val)
+            del dict[i-1]
+            f_df = df.drop(i - 1 , axis=0)
+            print("*")
+            df = f_df.copy()
+
+        print("after drop" , df)
+
         df = calculate(df)
         #cleardataframe(df)
-        print(df)
+
+        print("final " , df)
 
         distance_list = df['Distance'].tolist()
         print(distance_list)
@@ -173,6 +186,7 @@ while True:
             resultPoint3 = tools.Point(temp3.p1.x, temp3.p1.y)
         else:
             resultPoint3 = tools.Point(temp3.p2.x, temp3.p2.y)
+
 
         final_point = tools.getCenterOfThreePoint(resultPoint1, resultPoint2 , resultPoint3)
         print("coordinate of final point: ", final_point)
