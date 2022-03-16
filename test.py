@@ -3,13 +3,44 @@ from time import sleep
 import pandas as pd
 
 idf = pd.DataFrame({'ip': ['A', 'B', 'C', 'A', 'B', 'C'],
-                    'mac': ['10' , '20' , '30' , '50' , '20' , '40'],
-                   'data': [1,2,3,4,5,6]}
-                   , columns=['ip', 'mac','data'])
-# idf = idf.groupby(['ip', 'mac']).mean()
-# print(idf)
-#print(idf.groupby(['ip', 'mac']).mean())
-fdf = idf.loc[ idf['ip'] == 'A']
-print(fdf)
-fdf = fdf.drop(fdf.loc[fdf['mac'] == '10'].index , inplace=True)
-print(fdf)
+                    'mac': ['10', '20', '30', '50', '20', '40'],
+                    'data': [1, 2, 3, 4, 5, 6]}
+                   , index=["i1", "i2", "i3", "i4", "i5", "i6"]
+                   , columns=['ip', 'mac', 'data'])
+
+
+print(idf)
+idf2 = idf.groupby(['ip', 'mac']).mean()
+print(idf2)
+while True:
+    a = 'A'
+    b = '10'
+    df = idf2.drop((a, b), axis=0)
+    print(df)
+
+
+
+
+
+
+
+
+
+# print(idf.index)
+# print(idf.loc["i1"]['data'])
+#
+# idf2 = idf.groupby(['ip', 'mac']).mean()
+# print(idf2.index)
+# df2 = pd.DataFrame(index=idf2.index)
+# print(df2)
+# print(idf2.loc[('A', '10')]['data'])
+# a = 'A'
+# b = '10'
+# print(type(idf2.loc[(a, b)]['data']))
+# idff = pd.DataFrame(idf2.copy(), index = ["i1" ,  "i2" , "i3"])
+# print(idff)
+# print(idf2['data'] )
+
+
+# DataFrame.iat
+# Series.at
