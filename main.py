@@ -18,9 +18,9 @@ dict = {}
 i=0
 
 distance_list = []
-p1 = tools.Point(0,0) # coordinate of ESP 1
-p2 = tools.Point(1,3) # coordinate of ESP 2
-p3 = tools.Point(5,2) # coordinate of ESP 3
+p1 = tools.Point(0,0) # coordinate of ESP 2
+p2 = tools.Point(0,4) # coordinate of ESP 1
+p3 = tools.Point(4,0) # coordinate of ESP 4
 TRY_DISTANCE_STEP = 0.01
 
 def avgrrsi(init_df , ip , mac):
@@ -96,7 +96,7 @@ while True:
         b_data.extend([b_ip,b_url,b_rssi,b_mac,b_time])
 
         # Mac address list of ESP
-        list_esp = ["24:0a:c4:ee:35:b6" , "24:6f:28:0b:9b:fe"]
+        list_esp = ["24:0a:c4:ee:35:b6" , "24:6f:28:0b:9b:fe" , "3c:61:05:32:28:da" ,"3c:61:05:34:1a:c6" ]
         # Ignore ESP
         if b_mac in list_esp:
             continue
@@ -110,17 +110,17 @@ while True:
         #calculate avg rssi and filter
         avg_rssi_val = avgrrsi(df, b_ip, b_mac)
 
-        print(df)
-        print(avg_rssi_val)
+        #print(df)
+        #print(avg_rssi_val)
 
         if (abs(b_rssi - avg_rssi_val) > 5) and (i > 10):
-            print(b_rssi - avg_rssi_val)
+            #print(b_rssi - avg_rssi_val)
             del dict[i-1]
             f_df = df.drop(i - 1 , axis=0)
-            print("*")
+            #print("*")
             df = f_df.copy()
 
-        print("after drop" , df)
+        #print("after drop" , df)
 
         df = calculate(df)
         #cleardataframe(df)
@@ -134,17 +134,19 @@ while True:
         circle2 = tools.Circle(p2, distance_list[1])
         circle3 = tools.Circle(p3, distance_list[2])
 
+        print('*')
+
         circle11 = plt.Circle((p1.x, p1.y), circle1.r, color='b', fill=False)
         circle22 = plt.Circle((p1.x, p1.y), circle2.r, color='b', fill=False)
         circle33 = plt.Circle((p1.x, p1.y), circle3.r, color='b', fill=False)
-
+        print('**')
         fig, ax = plt.subplots()
         ax.set_xlim((-10, 10))
         ax.set_ylim((-10, 10))
         ax.add_artist(circle11)
         ax.add_artist(circle22)
         ax.add_artist(circle33)
-
+        print('***')
         if tools.isTwoCircleIntersect(circle1, circle2):
             if distance_list[0] > distance_list[1]:
                 circle1.r += TRY_DISTANCE_STEP
@@ -168,33 +170,37 @@ while True:
         temp1 = tools.getIntersectionPointsOfTwoIntersectCircle(circle1, circle2)
         temp2 = tools.getIntersectionPointsOfTwoIntersectCircle(circle2, circle3)
         temp3 = tools.getIntersectionPointsOfTwoIntersectCircle(circle3, circle1)
-
+        print('****')
 
         # The point where the intersection of the two circles of 1 and 2 takes y > 0
         if temp1.p1.y > 0:
+            print('*p1')
             resultPoint1 = p1
+            print('p1*')
         else:
             resultPoint1 = p2
-
+        print('*****')
         #The intersection of 2, 3 and 2 circles takes the mean of the two
         resultPoint2 = tools.Point(max(temp2.p1.x, temp2.p2.x), max(temp2.p1.y, temp2.p2.y))
-
+        print('6*')
         plt.plot([resultPoint1.x, resultPoint2.x], [resultPoint1.y, resultPoint2.y], '.', color='green')
-
+        print('7*')
         #3, 1 the intersection of the two circles takes the point where x > 0
         if temp3.p1.x > 0:
+            print('8*')
             resultPoint3 = tools.Point(temp3.p1.x, temp3.p1.y)
         else:
+            print('9*')
             resultPoint3 = tools.Point(temp3.p2.x, temp3.p2.y)
 
 
         final_point = tools.getCenterOfThreePoint(resultPoint1, resultPoint2 , resultPoint3)
         print("coordinate of final point: ", final_point)
         plt.plot([final_point.x , final_point.y], '.', color="pink")
-
+        print('10*')
         plt.gca().set_aspect('equal', adjustable='box')
-        #plt.show()
-
+        plt.show()
+        print('11*')
     except Exception as e:
         print('exception :', data.decode(), e)
 
