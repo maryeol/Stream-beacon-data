@@ -43,11 +43,14 @@ def calculate(init_df):
     init_df['Distance'] = (0.882909233) * pow((init_df['Rssi'] / -58), 4.57459326) + 0.045275821
     init_df = init_df[['IP', 'Mac', 'Distance']]
     init_df = init_df[-20:]
-    final_df = init_df.groupby(['IP', 'Mac']).mean()
+    #print(init_df['Distance'])
+    #final_df = init_df.groupby(['IP', 'Mac']).mean()
+    final_df = init_df.groupby(['IP', 'Mac']).last()
+
     return final_df
 
 def getDistance(init_df , ip, mac):
-    return init_df.loc[(ip,mac)]
+    return init_df.loc[(ip,mac)].values[0]
 
 def cleardataframe(df):
     #clear data from 50 sec el kdom
@@ -127,19 +130,22 @@ while True:
         df = calculate(df)
         print(df)
         #cleardataframe(df)
+        try:
+            d1 = getDistance(df, "192.168.162.119", b_mac) #k
+            d2 = getDistance(df, "192.168.162.76", b_mac) #h
+            d3 = getDistance(df, "192.168.162.139", b_mac) #i
 
-        d1 = getDistance(df, "192.168.162.119", b_mac) #k
-        d2 = getDistance(df, "192.168.162.76", b_mac) #h
-        d3 = getDistance(df, "192.168.162.139", b_mac) #i
+            m = (d1 * d1 - d2 * d2 - 16) / (-8)
+            x = 4 - m
 
-        m = (d1*d1 - pow(d2, 2) - 16) / (-8)
-        x = 4 - m
+            n = (d1 * d1 - d3 * d3 - 16) / (-8)
+            y = 4 - n
 
-        n = (pow(d1, 2) - pow(d3, 2) - 16) / (-8)
-        y = 4 - n
+            print('final coordiantes are: (', x, ',', y, ')')
 
-        print('final coordiantes are:')
-        print('x = ', x, 'y = ', y)
+        except Exception as e:
+            print("Error! Need 3 ESPs to calculate the coordinate of the beacon!")
+
 
         # distance_list = df['Distance'].tolist()
         # print(distance_list)
