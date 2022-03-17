@@ -40,7 +40,8 @@ def avgrrsi(init_df , ip , mac):
 
 def calculate(init_df):
     #init_df['Distance'] = pow(10, ((-69 - init_df['Rssi']) / (16)))
-    init_df['Distance'] = (0.882909233) * pow((init_df['Rssi'] / -58), 4.57459326) + 0.045275821
+    #init_df['Distance'] = (0.882909233) * pow((init_df['Rssi'] / -58), 4.57459326) + 0.045275821
+    init_df['Distance'] = pow(10, ((-69 - init_df['Rssi']) / (3 * 10)))
     init_df = init_df[['IP', 'Mac', 'Distance']]
     init_df = init_df[-20:]
     #print(init_df['Distance'])
