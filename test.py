@@ -4,19 +4,25 @@ import pandas as pd
 
 idf = pd.DataFrame({'ip': ['A', 'B', 'C', 'A', 'B', 'C'],
                     'mac': ['10', '20', '30', '50', '20', '40'],
-                    'data': [1, 2, 3, 4, 5, 6]}
+                    'data': [1, 2, 3, 6, 5, 4]}
                    , index=["i1", "i2", "i3", "i4", "i5", "i6"]
                    , columns=['ip', 'mac', 'data'])
 
 
 print(idf)
-idf2 = idf.groupby(['ip', 'mac']).mean()
+idf2 = idf.groupby(['ip', 'mac']).last()
 print(idf2)
-while True:
-    a = 'A'
-    b = '10'
-    df = idf2.drop((a, b), axis=0)
-    print(df)
+#print(idf2.sort_values(by = ['data']))
+
+#print(idf.sort_values(by = ['data']))
+
+
+# print(idf2)
+# while True:
+#     a = 'A'
+#     b = '10'
+#     df = idf2.drop((a, b), axis=0)
+#     print(df)
 
 
 
