@@ -23,12 +23,13 @@ p2 = tools.Point(0,4) # coordinate of ESP 1
 p3 = tools.Point(4,0) # coordinate of ESP 4
 TRY_DISTANCE_STEP = 0.01
 
-def avgrrsi(init_df , ip , mac):
+def averageRssi(init_df,ip ,mac):
     init_df = init_df[['IP', 'Mac', 'Rssi']]
-    init_df = init_df[-20:]
+    init_df = init_df[-10:]
     final_df = init_df.groupby(['IP', 'Mac']).mean()
     final_df = final_df.loc[(ip,mac)]
     return final_df['Rssi']
+
 
 # def extractavgrssi (init_df , ip , mac):
 #     print(init_df)
@@ -38,17 +39,15 @@ def avgrrsi(init_df , ip , mac):
 #     final_df = init_df.loc[init_df['Mac'] == mac]
 #     return final_df['Rssi'].values[0]
 
-def calculate(init_df):
-    #init_df['Distance'] = pow(10, ((-69 - init_df['Rssi']) / (16)))
-    #init_df['Distance'] = (0.882909233) * pow((init_df['Rssi'] / -58), 4.57459326) + 0.045275821
-    init_df['Distance'] = pow(10, ((-69 - init_df['Rssi']) / (3 * 10)))
-    init_df = init_df[['IP', 'Mac', 'Distance']]
+def calculate(init_df,ip ,mac):
+    init_df = init_df[['IP', 'Mac', 'Rssi']]
     init_df = init_df[-20:]
-    #print(init_df['Distance'])
-    #final_df = init_df.groupby(['IP', 'Mac']).mean()
-    final_df = init_df.groupby(['IP', 'Mac']).last()
-
+    final_df = init_df.groupby(['IP', 'Mac']).median()
+    init_df = final_df.loc[(ip, mac)]
+    median_rssi_val = init_df['Rssi']
+    final_df['Distance'] = (0.882909233) * pow((median_rssi_val / -58), 4.57459326) + 0.045275821
     return final_df
+
 
 def getDistance(init_df , ip, mac):
     return init_df.loc[(ip,mac)].values[0]
@@ -84,7 +83,7 @@ sock.bind((UDP_IP, UDP_PORT))
 
 
 #t1 = datetime.now()
-#while (datetime.now()-t1).seconds <= 5:  #run for 5 seconds
+#while (datetime.now()-t1).seconds <= 20:  #run for 5 seconds
 while True:
     #print(".",end='')
     data, addr = sock.recvfrom(1024)  # buffer size is 1024 bytes
@@ -115,21 +114,28 @@ while True:
         df = pd.DataFrame.from_dict(dict, orient="index", columns=['IP', 'URl', 'Rssi', 'Mac', 'Time'])
         os.system('clear')
 
-        #calculate avg rssi and filter
-        avg_rssi_val = avgrrsi(df, b_ip, b_mac)
+
+        #calculate avg rssi
+        avg_rssi_val = averageRssi(df, b_ip, b_mac)
 
         #print(df)
         #print(avg_rssi_val)
 
-        if (abs(b_rssi - avg_rssi_val) > 5) and (i > 10):
-            del dict[i-1]
-            f_df = df.drop(i - 1 , axis=0)
-            df = f_df.copy()
+        #Rssi filter
+
+        # if (abs(b_rssi - avg_rssi_val) > 5) and (i > 10):
+        #     print("The dropped value is " , dict[i - 1])
+        #     del dict[i-1]
+        #     f_df = df.drop(i - 1 , axis=0)
+        #     df = f_df.copy()
 
         #print("after drop" , df)
 
-        df = calculate(df)
-        print(df)
+        #calculate distance with median rssi value
+        final_dataframe = calculate(df, b_ip, b_mac)
+        print(final_dataframe)
+
+
         #cleardataframe(df)
         try:
             d1 = getDistance(df, "192.168.162.119", b_mac) #k
