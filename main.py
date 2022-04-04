@@ -39,18 +39,19 @@ def averageRssi(init_df,ip ,mac):
 #     final_df = init_df.loc[init_df['Mac'] == mac]
 #     return final_df['Rssi'].values[0]
 
-def calculate(init_df,ip ,mac):
+def medianRssi(init_df):
     init_df = init_df[['IP', 'Mac', 'Rssi']]
-    init_df = init_df[-20:]
+    init_df = init_df[-10:]
     final_df = init_df.groupby(['IP', 'Mac']).median()
-    init_df = final_df.loc[(ip, mac)]
-    median_rssi_val = init_df['Rssi']
-    final_df['Distance'] = (0.882909233) * pow((median_rssi_val / -58), 4.57459326) + 0.045275821
     return final_df
+
+def calculate(init_df):
+    init_df['Distance'] = (0.882909233) * pow((init_df['Rssi'] / -58), 4.57459326) + 0.045275821
+    return init_df
 
 
 def getDistance(init_df , ip, mac):
-    return init_df.loc[(ip,mac)].values[0]
+    return init_df.loc[(ip,mac)].values[1] # returns the Distance
 
 def cleardataframe(df):
     #clear data from 50 sec el kdom
@@ -117,35 +118,39 @@ while True:
 
         #calculate avg rssi
         avg_rssi_val = averageRssi(df, b_ip, b_mac)
-
+        ffdf= medianRssi(df)
         #print(df)
         #print(avg_rssi_val)
 
         #Rssi filter
 
-        # if (abs(b_rssi - avg_rssi_val) > 5) and (i > 10):
-        #     print("The dropped value is " , dict[i - 1])
-        #     del dict[i-1]
-        #     f_df = df.drop(i - 1 , axis=0)
-        #     df = f_df.copy()
+        if (abs(b_rssi - avg_rssi_val) > 5) and (i > 10):
+             print("The dropped value is " , dict[i - 1])
+             del dict[i-1]
+             f_df = df.drop(i - 1 , axis=0)
+             df = f_df.copy()
 
         #print("after drop" , df)
 
         #calculate distance with median rssi value
-        final_dataframe = calculate(df, b_ip, b_mac)
+        final_dataframe = calculate(ffdf)
         print(final_dataframe)
 
 
         #cleardataframe(df)
         try:
-            d1 = getDistance(df, "192.168.162.119", b_mac) #k
-            d2 = getDistance(df, "192.168.162.76", b_mac) #h
-            d3 = getDistance(df, "192.168.162.139", b_mac) #i
+            d1 = getDistance(final_dataframe, "192.168.100.175", b_mac) #k
+            d2 = getDistance(final_dataframe, "192.168.100.136", b_mac) #h
+            d3 = getDistance(final_dataframe, "192.168.100.139", b_mac) #i
 
-            m = (d1 * d1 - d2 * d2 - 16) / (-8)
+            print("distance(Phone,ESP Nb.175)= ", d1)
+            print("distance(Phone,ESP Nb.136)= ", d2)
+            print("distance(Phone,ESP Nb.139)= ", d3)
+
+            m = (d1 * d1 - d2 * d2 - 4*4) / (-2*4)
             x = 4 - m
 
-            n = (d1 * d1 - d3 * d3 - 16) / (-8)
+            n = (d1 * d1 - d3 * d3 - 4*4) / (-2*4)
             y = 4 - n
 
             print('final coordiantes are: (', x, ',', y, ')')
