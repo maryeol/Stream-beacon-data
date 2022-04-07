@@ -18,9 +18,9 @@ dict = {}
 i=0
 
 distance_list = []
-p1 = tools.Point(0,0) # coordinate of ESP 2
-p2 = tools.Point(0,4) # coordinate of ESP 1
-p3 = tools.Point(4,0) # coordinate of ESP 4
+p1 = tools.Point(0,0) # coordinate of ESP 99
+p2 = tools.Point(4,0) # coordinate of ESP 98
+p3 = tools.Point(0,4) # coordinate of ESP 121
 TRY_DISTANCE_STEP = 0.01
 
 def averageRssi(init_df,ip ,mac):
@@ -139,13 +139,13 @@ while True:
 
         #cleardataframe(df)
         try:
-            d1 = getDistance(final_dataframe, "192.168.100.175", b_mac) #k
-            d2 = getDistance(final_dataframe, "192.168.100.136", b_mac) #h
-            d3 = getDistance(final_dataframe, "192.168.100.139", b_mac) #i
+            d1 = getDistance(final_dataframe, "192.168.162.99", b_mac) #k
+            d2 = getDistance(final_dataframe, "192.168.162.98", b_mac) #h
+            d3 = getDistance(final_dataframe, "192.168.162.121", b_mac) #i
 
-            print("distance(Phone,ESP Nb.175)= ", d1)
-            print("distance(Phone,ESP Nb.136)= ", d2)
-            print("distance(Phone,ESP Nb.139)= ", d3)
+            print("distance(Phone,ESP Nb.99)= ", d1)
+            print("distance(Phone,ESP Nb.98)= ", d2)
+            print("distance(Phone,ESP Nb.121)= ", d3)
 
             m = (d1 * d1 - d2 * d2 - 4*4) / (-2*4)
             x = 4 - m
@@ -153,86 +153,106 @@ while True:
             n = (d1 * d1 - d3 * d3 - 4*4) / (-2*4)
             y = 4 - n
 
-            print('final coordiantes are: (', x, ',', y, ')')
+            print(" ############ TRIANGULATION ALGORITHM ################ ")
+            print('Coordiantes Are : (', x, ',', y, ')')
 
         except Exception as e:
             print("Error! Need 3 ESPs to calculate the coordinate of the beacon!")
 
+        print(" ############ CIRCLE ALGORITHM ################ ")
+        ############# CIRCLE ALGORITHM  ###############
 
-        # distance_list = df['Distance'].tolist()
-        # print(distance_list)
+        try:
+            dd1 = getDistance(final_dataframe, "192.168.162.99", b_mac)  # k
+            dd2 = getDistance(final_dataframe, "192.168.162.98", b_mac)  # h
+            dd3 = getDistance(final_dataframe, "192.168.162.121", b_mac)  # i
 
-        # circle1 = tools.Circle(p1, distance_list[0])
-        # circle2 = tools.Circle(p2, distance_list[1])
-        # circle3 = tools.Circle(p3, distance_list[2])
-        #
-        # print('*')
-        #
-        # circle11 = plt.Circle((p1.x, p1.y), circle1.r, color='b', fill=False)
-        # circle22 = plt.Circle((p1.x, p1.y), circle2.r, color='b', fill=False)
-        # circle33 = plt.Circle((p1.x, p1.y), circle3.r, color='b', fill=False)
-        # print('**')
-        # fig, ax = plt.subplots()
-        # ax.set_xlim((-10, 10))
-        # ax.set_ylim((-10, 10))
-        # ax.add_artist(circle11)
-        # ax.add_artist(circle22)
-        # ax.add_artist(circle33)
-        # print('***')
-        # if tools.isTwoCircleIntersect(circle1, circle2):
-        #     if distance_list[0] > distance_list[1]:
-        #         circle1.r += TRY_DISTANCE_STEP
-        #     else:
-        #         circle2.r += TRY_DISTANCE_STEP
-        #
-        # if tools.isTwoCircleIntersect(circle1, circle3):
-        #     if circle1.r > circle3.r and circle2.r > circle3.r:
-        #         circle1.r += TRY_DISTANCE_STEP
-        #         circle2.r += TRY_DISTANCE_STEP
-        #     else:
-        #         circle3.r += TRY_DISTANCE_STEP
-        #
-        # if tools.isTwoCircleIntersect(circle2, circle3):
-        #     if circle2.r > circle3.r and circle1.r > circle3.r:
-        #         circle1.r += TRY_DISTANCE_STEP
-        #         circle2.r += TRY_DISTANCE_STEP
-        #     else:
-        #         circle3.r += TRY_DISTANCE_STEP
-        #
-        # temp1 = tools.getIntersectionPointsOfTwoIntersectCircle(circle1, circle2)
-        # temp2 = tools.getIntersectionPointsOfTwoIntersectCircle(circle2, circle3)
-        # temp3 = tools.getIntersectionPointsOfTwoIntersectCircle(circle3, circle1)
-        # print('****')
-        #
-        # # The point where the intersection of the two circles of 1 and 2 takes y > 0
-        # if temp1.p1.y > 0:
-        #     print('*p1')
-        #     resultPoint1 = p1
-        #     print('p1*')
-        # else:
-        #     resultPoint1 = p2
-        # print('*****')
-        # #The intersection of 2, 3 and 2 circles takes the mean of the two
-        # resultPoint2 = tools.Point(max(temp2.p1.x, temp2.p2.x), max(temp2.p1.y, temp2.p2.y))
-        # print('6*')
-        # plt.plot([resultPoint1.x, resultPoint2.x], [resultPoint1.y, resultPoint2.y], '.', color='green')
-        # print('7*')
-        # #3, 1 the intersection of the two circles takes the point where x > 0
-        # if temp3.p1.x > 0:
-        #     print('8*')
-        #     resultPoint3 = tools.Point(temp3.p1.x, temp3.p1.y)
-        # else:
-        #     print('9*')
-        #     resultPoint3 = tools.Point(temp3.p2.x, temp3.p2.y)
-        #
-        #
-        # final_point = tools.getCenterOfThreePoint(resultPoint1, resultPoint2 , resultPoint3)
-        # print("coordinate of final point: ", final_point)
-        # plt.plot([final_point.x , final_point.y], '.', color="pink")
-        # print('10*')
-        # plt.gca().set_aspect('equal', adjustable='box')
-        # plt.show()
-        # print('11*')
+            circle1 = tools.Circle(p1, dd1)
+            circle2 = tools.Circle(p2, dd2)
+            circle3 = tools.Circle(p3, dd3)
+
+            # circle11 = plt.Circle((p1.x, p1.y), circle1.r, color='b', fill=False)
+            # circle22 = plt.Circle((p1.x, p1.y), circle2.r, color='b', fill=False)
+            # circle33 = plt.Circle((p1.x, p1.y), circle3.r, color='b', fill=False)
+
+            # fig, ax = plt.subplots()
+            # ax.set_xlim((-10, 10))
+            # ax.set_ylim((-10, 10))
+            # ax.add_artist(circle11)
+            # ax.add_artist(circle22)
+            # ax.add_artist(circle33)
+            # print('***')
+
+            # First look at whether there are intersections between the three circles.
+            # If 1、2 no intersection between the two circles
+            while ( (not tools.isTwoCircleIntersect(circle1, circle2)) and (not tools.isTwoCircleIntersect(circle1, circle2))
+                and (not tools.isTwoCircleIntersect(circle1, circle2)) ):
+                if not tools.isTwoCircleIntersect(circle1, circle2):
+                    # Try increasing the radius of a circle，Who is bigger and who increases
+                    if circle1.r > circle2.r:
+                        circle1.r += TRY_DISTANCE_STEP
+                    else:
+                        circle2.r += TRY_DISTANCE_STEP
+                    continue
+
+                # If there is no intersection between the two circles of 1, 3
+                if not tools.isTwoCircleIntersect(circle1, circle3):
+                    if circle1.r > circle3.r and circle2.r > circle3.r:
+                        circle1.r += TRY_DISTANCE_STEP
+                        circle2.r += TRY_DISTANCE_STEP
+                    else:
+                        circle3.r += TRY_DISTANCE_STEP
+                    continue
+
+                # If there is no intersection between the two originals
+                if not tools.isTwoCircleIntersect(circle2, circle3):
+                    if circle2.r > circle3.r and circle1.r > circle3.r:
+                        circle1.r += TRY_DISTANCE_STEP
+                        circle2.r += TRY_DISTANCE_STEP
+                    else:
+                        circle3.r += TRY_DISTANCE_STEP
+                    continue
+
+                # When you try to find that the three circles have intersections
+                # Find the intersection between the two circles.
+            temp1 = tools.getIntersectionPointsOfTwoIntersectCircle(circle1, circle2)
+            temp2 = tools.getIntersectionPointsOfTwoIntersectCircle(circle2, circle3)
+            temp3 = tools.getIntersectionPointsOfTwoIntersectCircle(circle3, circle1)
+            # The point where the intersection of the two circles of 1 and 2 takes y > 0
+            if temp1.p1.y > 0:
+                resultPoint1 = p1
+            else:
+                resultPoint1 = p2
+
+            #The intersection of 2, 3 and 2 circles takes the mean of the two
+            resultPoint2 = tools.Point(max(temp2.p1.x, temp2.p2.x), max(temp2.p1.y, temp2.p2.y))
+
+            #plt.plot([resultPoint1.x, resultPoint2.x], [resultPoint1.y, resultPoint2.y], '.', color='green')
+
+            #3, 1 the intersection of the two circles takes the point where x > 0
+            if temp3.p1.x > 0:
+                resultPoint3 = tools.Point(temp3.p1.x, temp3.p1.y)
+            else:
+                resultPoint3 = tools.Point(temp3.p2.x, temp3.p2.y)
+
+            # Finally, Find the center point of three points
+            final_point = tools.getCenterOfThreePoint(resultPoint1, resultPoint2 , resultPoint3)
+
+            # print ("point 1 : ", resultPoint1)
+            # print ("point 2 : ",resultPoint2)
+            # print ("point 3 : ", resultPoint3)
+            print("Coordinates Are : ", final_point)
+
+            print( " ############ MEAN ################ ")
+            x1 = max(final_point.x , x)
+            y1 = (final_point.y + y)/2
+            print(" FINAL POINT IS : (" , x1 ,",", y1, ")" )
+                # plt.plot([final_point.x , final_point.y], '.', color="pink")
+                # plt.gca().set_aspect('equal', adjustable='box')
+                # plt.show()
+        except Exception as e:
+            print("Error! Need 3 ESPs to calculate the coordinate of the beacon!")
+
     except Exception as e:
         print('exception :', data.decode(), e)
 
