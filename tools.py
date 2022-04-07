@@ -51,41 +51,114 @@ def isTwoCircleIntersect(c1, c2):
 
 def getIntersectionPointsOfTwoIntersectCircle(c1, c2):
 
-    #the final answer is pointVector2
+    # The final answer is pointVector2
     pointVector2 = PointVector(Point(0, 0), Point(0, 0))
-    x0 = c1.center.x
-    y0 = c1.center.y
-    r0 = c1.r
-    x1 = c2.center.x
-    y1 = c2.center.y
-    r1 = c2.r
-    d = getDistanceBetweenTwoPoint(c1.center, c2.center)
-    #non intersecting
-    if d > r0 + r1:
-        return None
-    #One circle within other
-    if d < abs(r0 - r1):
-        return None
-    #coincident circles
-    if d == 0 and r0 == r1:
-        return None
-    else:
-        a = (r0 ** 2 - r1 ** 2 + d ** 2) / (2 * d)
-        h = math.sqrt(r0 ** 2 - a ** 2)
-        x2 = x0 + a * (x1 - x0) / d
-        y2 = y0 + a * (y1 - y0) / d
-        x3 = x2 + h * (y1 - y0) / d
-        y3 = y2 - h * (x1 - x0) / d
-        x4 = x2 - h * (y1 - y0) / d
-        y4 = y2 + h * (x1 - x0) / d
 
-        pointVector2.p1.x = x3
-        pointVector2.p1.y = y3
+    # If c1 and c2 are on the x-axis
+    if (c1.center.y == c2.center.y and c1.center.y == 0):
 
-        pointVector2.p2.x = x4
-        pointVector2.p2.y = y4
+    #See which circle's center is closer to the origin
+        if c1.center.x < c2.center.x :
+           ct1 = Circle(Point(c1.center.x, c1.center.y), c1.r)
+        else:
+            ct1 = Circle(Point(c2.center.x, c2.center.y), c2.r)
+        if c1.center.x < c2.center.x:
+           ct2 = Circle(Point(c2.center.x, c2.center.y), c2.r)
+        else:
+            ct2 = Circle(Point(c1.center.x, c1.center.y), c1.r)
+    # Center distance double
+        l = getDistanceBetweenTwoPoint(ct1.center, ct2.center)
+
+    # Calculate the cosine of the angle formed by the intersection and the x-axis
+        cos = (ct1.r * ct1.r + l * l - ct2.r * ct2.r) / (2 * ct1.r * l)
+        if cos > 1:
+            cos = 0
+
+    # Calculating sin
+        sin = math.sqrt(1 - cos * cos)
+    # Get the coordinates
+        pointVector2.p1.x = ct1.center.x + ct1.r * cos
+        pointVector2.p2.x = pointVector2.p1.x
+        pointVector2.p1.y = ct1.r * sin
+        pointVector2.p2.y = 0 - pointVector2.p1.y
+
+
+        return pointVector2
+
+    # If c1 and c2 are on the y-axis
+    if (c1.center.x == c2.center.x and c1.center.x == 0):
+
+        # See which circle's center is closer to the origin
+        if c1.center.y < c2.center.y:
+            ct1 = Circle(Point(c1.center.x, c1.center.y), c1.r)
+        else:
+            ct1 = Circle(Point(c2.center.x, c2.center.y), c2.r)
+        if c1.center.y < c2.center.y:
+            ct2 = Circle(Point(c2.center.x, c2.center.y), c2.r)
+        else:
+            ct2 = Circle(Point(c1.center.x, c1.center.y), c1.r)
+
+        # Center distance double
+        l = getDistanceBetweenTwoPoint(ct1.center, ct2.center)
+        # Calculate the cosine of the angle formed by the intersection and the x-axis
+        cos = (ct1.r * ct1.r + l * l - ct2.r * ct2.r) / (2 * ct1.r * l)
+        if cos > 1:
+            cos = 0
+
+        # Calculating sin
+        sin = math.sqrt(1 - cos * cos)
+        # Get the coordinates
+        pointVector2.p1.y = ct1.center.y + ct1.r * cos
+        pointVector2.p2.y = pointVector2.p1.y
+        pointVector2.p1.x = ct1.r * sin
+        pointVector2.p2.x = 0 - pointVector2.p1.x
+
+        return pointVector2
+
+# If the center of a circle is on the x-axis, the center of a circle is on the y-axis
+    if (c1.center.x == 0 and c2.center.y == 0) or (c2.center.x == 0 and c1.center.y == 0):
+
+    # Set the circle on the y-axis to ct1 and the circle on the x-axis to ct2
+        if c1.center.x == 0:
+            ct1 = Circle(Point(c1.center.x, c1.center.y), c1.r)
+
+        else:
+            ct1 = Circle(Point(c2.center.x, c2.center.y), c2.r)
+
+
+        if c1.center.y == 0:
+            ct2 = Circle(Point(c1.center.x, c1.center.y), c1.r)
+
+        else:
+            ct2 = Circle(Point(c2.center.x, c2.center.y), c2.r)
+
+
+    # Center distance double
+        l = getDistanceBetweenTwoPoint(ct1.center, ct2.center)
+
+
+    # Find the cos of a angle
+        aCos = (ct1.r * ct1.r + l * l - ct2.r * ct2.r) / (2 * ct1.r * l)
+        if aCos > 1:
+            aCos = 0
+    # Find the arc of the a angle
+        aAngle = math.acos(aCos)
+    #Find the tan of b
+        aTan = ct2.center.x / ct1.center.y
+
+   #Find the arc of the b angle
+        bAngle = math.atan(aTan)
+
+    # Get the coordinates
+        pointVector2.p1.x = ct1.center.x + math.sin(bAngle - aAngle)
+        pointVector2.p1.y = ct1.center.y - math.cos(bAngle - aAngle)
+        pointVector2.p2.x = ct1.center.x + math.sin(bAngle + aAngle)
+        pointVector2.p2.y = ct1.center.y - math.cos(bAngle - aAngle)
+
+        return pointVector2
 
     return pointVector2
+
 
 #Get the center point of three points
 def getCenterOfThreePoint(p1, p2, p3):

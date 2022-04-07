@@ -9,9 +9,22 @@ idf = pd.DataFrame({'ip': ['A', 'B', 'C', 'A', 'B', 'C'],
                    , columns=['ip', 'mac', 'data'])
 
 
-print(idf)
-idf2 = idf.groupby(['ip', 'mac']).last()
-print(idf2)
+a = 1
+def test(a):
+    while True:
+        if (a < 5):
+            a+=1
+            print(a)
+            continue
+        if(a<10):
+            print("666")
+            a += 1
+
+print (test (a))
+#
+# print(idf)
+# idf2 = idf.groupby(['ip', 'mac']).last()
+# print(idf2)
 #print(idf2.sort_values(by = ['data']))
 
 #print(idf.sort_values(by = ['data']))
