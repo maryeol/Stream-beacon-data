@@ -1,12 +1,15 @@
 import os
 import socket
 import json
-from time import sleep
+
 
 import pandas as pd
 from datetime import datetime
 from matplotlib import pyplot as plt
 import tools
+import base64
+import random
+import time
 
 UDP_IP = "192.168.162.129"
 UDP_PORT = 5015
@@ -18,9 +21,9 @@ dict = {}
 i=0
 
 distance_list = []
-p1 = tools.Point(0,0) # coordinate of ESP 99
-p2 = tools.Point(4,0) # coordinate of ESP 98
-p3 = tools.Point(0,4) # coordinate of ESP 121
+p1 = tools.Point(0,0) # coordinate of ESP 99 -  Origin
+p2 = tools.Point(4,0) # coordinate of ESP 98 - On the x-axes
+p3 = tools.Point(0,4) # coordinate of ESP 121 - On the y-axes
 TRY_DISTANCE_STEP = 0.01
 
 def averageRssi(init_df,ip ,mac):
@@ -29,15 +32,6 @@ def averageRssi(init_df,ip ,mac):
     final_df = init_df.groupby(['IP', 'Mac']).mean()
     final_df = final_df.loc[(ip,mac)]
     return final_df['Rssi']
-
-
-# def extractavgrssi (init_df , ip , mac):
-#     print(init_df)
-#     print(type(init_df))
-#     print(init_df['IP'])
-#     final_df = init_df.loc[init_df['IP'] == ip]
-#     final_df = init_df.loc[init_df['Mac'] == mac]
-#     return final_df['Rssi'].values[0]
 
 def medianRssi(init_df):
     init_df = init_df[['IP', 'Mac', 'Rssi']]
@@ -61,6 +55,36 @@ def cleardataframe(df):
     df.drop(index_names, inplace=True)
     os.system('clear')
     print(df)
+
+def convert2Base64(input):
+    bytes_string = input.encode('ascii')
+    base_64_bytes = base64.b64encode(bytes_string)
+    base64_string = base_64_bytes.decode('ascii')
+    print("encoded string : " , base64_string)
+    return base64_string
+
+def getID(input):
+    return input[1]+input[4]
+
+def generatePAN():
+    pan = random.randint(1000000000000000000, 9999999999999999999)
+    return pan
+
+def convertBase10ToBase64(num):
+    order = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-"
+    base = len(order)
+    str = ""
+    while num:
+        r = int (num % base)
+        num -= r
+        num /= base
+        str = order[r] + str
+    return str
+
+def getTime():
+    t = time.localtime()
+    current_time = time.strftime("%H:%M:%S", t)
+    return (current_time)
 
 class beacon:
     url: str
