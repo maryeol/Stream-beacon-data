@@ -1,6 +1,48 @@
 from datetime import datetime
-from time import sleep
+import time
 import pandas as pd
+import base64
+import random
+
+def convert2Base64(pan):
+    bytes_string = pan.encode('ascii')
+    #print(" ASCII : ", bytes_string)
+    base_64_bytes = base64.b64encode(bytes_string)
+    #print(" base 64 bytes : ", base_64_bytes)
+    base64_string = base_64_bytes.decode('ascii')
+    print("encoded PAN : ", base64_string)
+    return base64_string
+
+def convertBase10ToBase64(num):
+    order = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-"
+    base = len(order)
+    str = ""
+    while num:
+        r = int (num % base)
+        num -= r
+        num /= base
+        str = order[r] + str
+    return str
+
+def getID(input):
+    print(input[1]+input[4])
+    return input[1]+input[4]
+
+def generatePAN():
+    pan = random.randint(1000000000000000000 , 9999999999999999999)
+    return pan
+
+def getTime():
+    t = time.localtime()
+    current_time = time.strftime("%H:%M:%S", t)
+    return (current_time)
+
+def time2String(input):
+    return input[0:2]+input[3:5]+input[6:8]
+
+def ConvertTimetoBase64(input):
+    input = int(input)
+    return convertBase10ToBase64(input)
 
 idf = pd.DataFrame({'ip': ['A', 'B', 'C', 'A', 'B', 'C'],
                     'mac': ['10', '20', '30', '50', '20', '40'],
@@ -9,18 +51,18 @@ idf = pd.DataFrame({'ip': ['A', 'B', 'C', 'A', 'B', 'C'],
                    , columns=['ip', 'mac', 'data'])
 
 
-a = 1
-def test(a):
-    while True:
-        if (a < 5):
-            a+=1
-            print(a)
-            continue
-        if(a<10):
-            print("666")
-            a += 1
-
-print (test (a))
+#a = 1
+# def test(a):
+#     while True:
+#         if (a < 5):
+#             a+=1
+#             print(a)
+#             continue
+#         if(a<10):
+#             print("666")
+#             a += 1
+#
+# print (test (a))
 #
 # print(idf)
 # idf2 = idf.groupby(['ip', 'mac']).last()
