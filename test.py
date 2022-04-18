@@ -4,29 +4,28 @@ import pandas as pd
 import base64
 import random
 
-def convert2Base64(pan):
-    bytes_string = pan.encode('ascii')
-    #print(" ASCII : ", bytes_string)
-    base_64_bytes = base64.b64encode(bytes_string)
-    #print(" base 64 bytes : ", base_64_bytes)
-    base64_string = base_64_bytes.decode('ascii')
-    print("encoded PAN : ", base64_string)
-    return base64_string
+# def convert2Base64(pan):
+#     bytes_string = pan.encode('ascii')
+#     #print(" ASCII : ", bytes_string)
+#     base_64_bytes = base64.b64encode(bytes_string)
+#     #print(" base 64 bytes : ", base_64_bytes)
+#     base64_string = base_64_bytes.decode('ascii')
+#     return base64_string
 
 def convertBase10ToBase64(num):
+    num = int(num)
     order = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-"
     base = len(order)
     str = ""
     while num:
-        r = int (num % base)
+        r = int(num % base)
         num -= r
         num /= base
         str = order[r] + str
     return str
 
 def getID(input):
-    print(input[1]+input[4])
-    return input[1]+input[4]
+    return input[7:11]
 
 def generatePAN():
     pan = random.randint(1000000000000000000 , 9999999999999999999)
@@ -43,6 +42,27 @@ def time2String(input):
 def ConvertTimetoBase64(input):
     input = int(input)
     return convertBase10ToBase64(input)
+
+def getLane(x):
+    if x<2 and x>=0:
+        return 1
+    if x<4 and x>=2 :
+        return 2
+    if x<6 and x>=6:
+        return 3
+
+print(getLane(0.99))
+
+input="http://2509/"
+
+print ("Emitted ID is: " ,getID(input))
+print("encoded ID is :" , convertBase10ToBase64(getID(input)) )
+
+print("generated PAN is :", generatePAN())
+print("encoded PAN is : ", convertBase10ToBase64(generatePAN()))
+
+print("time :", time2String(getTime()))
+print("encoded time", convertBase10ToBase64(time2String(getTime())))
 
 idf = pd.DataFrame({'ip': ['A', 'B', 'C', 'A', 'B', 'C'],
                     'mac': ['10', '20', '30', '50', '20', '40'],
