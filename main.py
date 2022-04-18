@@ -56,21 +56,15 @@ def cleardataframe(df):
     os.system('clear')
     print(df)
 
-def convert2Base64(input):
-    bytes_string = input.encode('ascii')
-    base_64_bytes = base64.b64encode(bytes_string)
-    base64_string = base_64_bytes.decode('ascii')
-    print("encoded string : " , base64_string)
-    return base64_string
-
 def getID(input):
-    return input[1]+input[4]
+    return input[7:11]
 
 def generatePAN():
     pan = random.randint(1000000000000000000, 9999999999999999999)
     return pan
 
 def convertBase10ToBase64(num):
+    num = int(num)
     order = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-"
     base = len(order)
     str = ""
@@ -81,10 +75,21 @@ def convertBase10ToBase64(num):
         str = order[r] + str
     return str
 
+def time2String(input):
+    return input[0:2]+input[3:5]+input[6:8]
+
 def getTime():
     t = time.localtime()
     current_time = time.strftime("%H:%M:%S", t)
     return (current_time)
+
+def getLane(x):
+    if x < 2 and x >= 0:
+        return 1
+    if x < 4 and x >= 2:
+        return 2
+    if x < 6 and x >= 6:
+        return 3
 
 class beacon:
     url: str
@@ -165,11 +170,11 @@ while True:
         try:
             d1 = getDistance(final_dataframe, "192.168.162.99", b_mac) #k
             d2 = getDistance(final_dataframe, "192.168.162.98", b_mac) #h
-            d3 = getDistance(final_dataframe, "192.168.162.121", b_mac) #i
+            d3 = getDistance(final_dataframe, "192.168.162.119", b_mac) #i
 
             print("distance(Phone,ESP Nb.99)= ", d1)
             print("distance(Phone,ESP Nb.98)= ", d2)
-            print("distance(Phone,ESP Nb.121)= ", d3)
+            print("distance(Phone,ESP Nb.119)= ", d3)
 
             m = (d1 * d1 - d2 * d2 - 4*4) / (-2*4)
             x = 4 - m
@@ -189,7 +194,7 @@ while True:
         try:
             dd1 = getDistance(final_dataframe, "192.168.162.99", b_mac)  # k
             dd2 = getDistance(final_dataframe, "192.168.162.98", b_mac)  # h
-            dd3 = getDistance(final_dataframe, "192.168.162.121", b_mac)  # i
+            dd3 = getDistance(final_dataframe, "192.168.162.119", b_mac)  # i
 
             circle1 = tools.Circle(p1, dd1)
             circle2 = tools.Circle(p2, dd2)
@@ -271,11 +276,23 @@ while True:
             x1 = max(final_point.x , x)
             y1 = (final_point.y + y)/2
             print(" FINAL POINT IS : (" , x1 ,",", y1, ")" )
-                # plt.plot([final_point.x , final_point.y], '.', color="pink")
-                # plt.gca().set_aspect('equal', adjustable='box')
-                # plt.show()
+            # plt.plot([final_point.x , final_point.y], '.', color="pink")
+            # plt.gca().set_aspect('equal', adjustable='box')
+            # plt.show()
+
+
         except Exception as e:
             print("Error! Need 3 ESPs to calculate the coordinate of the beacon!")
+
+        print(b_url)
+        if b_url[11] == "1":
+            encodedid = convertBase10ToBase64(getID(b_url))
+            lane = str(getLane(x1))
+            encodedpan = convertBase10ToBase64(generatePAN())
+            encodedtime = convertBase10ToBase64(time2String(getTime()))
+
+            final_url = encodedid + lane + encodedpan + encodedtime
+            print(" final url is : ", final_url)
 
     except Exception as e:
         print('exception :', data.decode(), e)
