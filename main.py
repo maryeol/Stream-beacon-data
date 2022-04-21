@@ -13,6 +13,8 @@ import time
 
 UDP_IP = "192.168.162.129"
 UDP_PORT = 5015
+ESP_IP = "192.168.162.121"
+ESP_PORT = 4444
 index = 0
 index1 = 0
 
@@ -88,7 +90,7 @@ def getLane(x):
         return 1
     if x < 4 and x >= 2:
         return 2
-    if x < 6 and x >= 6:
+    if x >= 4:
         return 3
 
 class beacon:
@@ -133,7 +135,7 @@ while True:
         b_data.extend([b_ip,b_url,b_rssi,b_mac,b_time])
 
         # Mac address list of ESP
-        list_esp = ["24:0a:c4:ee:35:b6" , "24:6f:28:0b:9b:fe" , "3c:61:05:32:28:da" ,"3c:61:05:34:1a:c6" ]
+        list_esp = ["24:0a:c4:ee:35:b6" , "24:6f:28:0b:9b:fe" , "3c:61:05:32:28:da" ,"3c:61:05:34:1a:c6", "3c:61:05:32:28:da" ]
         # Ignore ESP
         if b_mac in list_esp:
             continue
@@ -183,7 +185,7 @@ while True:
             y = 4 - n
 
             print(" ############ TRIANGULATION ALGORITHM ################ ")
-            print('Coordiantes Are : (', x, ',', y, ')')
+            print('Coordiantes of' , b_mac, 'Are :(', x, ',', y, ')')
 
         except Exception as e:
             print("Error! Need 3 ESPs to calculate the coordinate of the beacon!")
@@ -270,7 +272,7 @@ while True:
             # print ("point 1 : ", resultPoint1)
             # print ("point 2 : ",resultPoint2)
             # print ("point 3 : ", resultPoint3)
-            print("Coordinates Are : ", final_point)
+            print('Coordiantes of' , b_mac, 'Are :(',final_point)
 
             print( " ############ MEAN ################ ")
             x1 = max(final_point.x , x)
@@ -279,20 +281,22 @@ while True:
             # plt.plot([final_point.x , final_point.y], '.', color="pink")
             # plt.gca().set_aspect('equal', adjustable='box')
             # plt.show()
+            print(b_url)
+
+            if y1 < 2:
+                encodedid = convertBase10ToBase64(getID(b_url))
+                lane = str(getLane(x1))
+                encodedpan = convertBase10ToBase64(generatePAN())
+                encodedtime = convertBase10ToBase64(time2String(getTime()))
+
+                final_url = encodedid + lane + encodedpan + encodedtime
+                print(" final url is : ", final_url)
+                sock.sendto(final_url.encode('utf-8'), (ESP_IP, ESP_PORT))
 
 
         except Exception as e:
             print("Error! Need 3 ESPs to calculate the coordinate of the beacon!")
 
-        print(b_url)
-        if b_url[11] == "1":
-            encodedid = convertBase10ToBase64(getID(b_url))
-            lane = str(getLane(x1))
-            encodedpan = convertBase10ToBase64(generatePAN())
-            encodedtime = convertBase10ToBase64(time2String(getTime()))
-
-            final_url = encodedid + lane + encodedpan + encodedtime
-            print(" final url is : ", final_url)
 
     except Exception as e:
         print('exception :', data.decode(), e)
