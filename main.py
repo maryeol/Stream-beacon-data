@@ -20,7 +20,7 @@ index1 = 0
 
 
 dict = {}
-i=0
+i = 0
 
 distance_list = []
 p1 = tools.Point(0,0) # coordinate of ESP 99 -  Origin
@@ -62,7 +62,8 @@ def getID(input):
     return input[7:11]
 
 def generatePAN():
-    pan = random.randint(1000000000000000000, 9999999999999999999)
+    #pan = random.randint(1000000000000000000, 9999999999999999999)
+    pan = 9999999999999999999
     return pan
 
 def convertBase10ToBase64(num):
@@ -170,6 +171,7 @@ while True:
 
         #cleardataframe(df)
         try:
+
             d1 = getDistance(final_dataframe, "192.168.162.99", b_mac) #k
             d2 = getDistance(final_dataframe, "192.168.162.98", b_mac) #h
             d3 = getDistance(final_dataframe, "192.168.162.119", b_mac) #i
@@ -188,7 +190,7 @@ while True:
             print('Coordiantes of' , b_mac, 'Are :(', x, ',', y, ')')
 
         except Exception as e:
-            print("Error! Need 3 ESPs to calculate the coordinate of the beacon!")
+            print("Error! Need 3 ESPs to calculate the coordinate of the beacon!" , e)
 
         print(" ############ CIRCLE ALGORITHM ################ ")
         ############# CIRCLE ALGORITHM  ###############
@@ -283,7 +285,7 @@ while True:
             # plt.show()
             print(b_url)
 
-            if y1 < 2:
+            if y1 < 4:
                 encodedid = convertBase10ToBase64(getID(b_url))
                 lane = str(getLane(x1))
                 encodedpan = convertBase10ToBase64(generatePAN())

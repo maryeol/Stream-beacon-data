@@ -1,8 +1,4 @@
 import math
-from cmath import sqrt
-
-RSSI_TO_DISTANCE_A = 60
-RSSI_TO_DISTANCE_N = 3.3
 
 class Point:
     x: float
@@ -13,8 +9,6 @@ class Point:
 
     def __repr__(self):
         return "".join(["Point(", str(self.x), ",", str(self.y), ")"])
-
-
 
 class PointVector:
     p1: Point
@@ -32,8 +26,6 @@ class Circle:
     def __repr__(self):
         return "".join(["Circle(", str(self.center), ", r = ", str(self.r), ")"])
 
-
-
 #Method to calculate Distance to Signal strength
 def calculate(rssi):
     return ((0.882909233)* pow((rssi/-58),4.57459326)+0.045275821)
@@ -48,7 +40,6 @@ def isTwoCircleIntersect(c1, c2):
     return getDistanceBetweenTwoPoint(c1.center, c2.center) < c1.r + c2.r
 
 #Find the intersection of two intersecting circles
-
 def getIntersectionPointsOfTwoIntersectCircle(c1, c2):
 
     # The final answer is pointVector2
@@ -121,21 +112,17 @@ def getIntersectionPointsOfTwoIntersectCircle(c1, c2):
     # Set the circle on the y-axis to ct1 and the circle on the x-axis to ct2
         if c1.center.x == 0:
             ct1 = Circle(Point(c1.center.x, c1.center.y), c1.r)
-
         else:
             ct1 = Circle(Point(c2.center.x, c2.center.y), c2.r)
 
-
         if c1.center.y == 0:
             ct2 = Circle(Point(c1.center.x, c1.center.y), c1.r)
-
         else:
             ct2 = Circle(Point(c2.center.x, c2.center.y), c2.r)
 
 
     # Center distance double
         l = getDistanceBetweenTwoPoint(ct1.center, ct2.center)
-
 
     # Find the cos of a angle
         aCos = (ct1.r * ct1.r + l * l - ct2.r * ct2.r) / (2 * ct1.r * l)
@@ -158,7 +145,6 @@ def getIntersectionPointsOfTwoIntersectCircle(c1, c2):
         return pointVector2
 
     return pointVector2
-
 
 #Get the center point of three points
 def getCenterOfThreePoint(p1, p2, p3):
