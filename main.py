@@ -78,6 +78,30 @@ def convertBase10ToBase64(num):
         str = order[r] + str
     return str
 
+def convertPanToBase64(num):
+    num1 = num[0:9]
+    num2 = num[9:19]
+
+    order = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_-"
+    base = len(order)
+    str = ""
+    str2 = ""
+    while num1:
+        num1 = int(num1)
+        r11 = int (num1 % base)
+        num1 -= r11
+        num1 /= base
+        str = order[r11] + str
+    while num2:
+        num2 = int(num2)
+        r22 = int (num2 % base)
+        num2 -= r22
+        num2 /= base
+        str2 = order[r22] + str2
+    str = str + str2
+
+    return str
+
 def time2String(input):
     return input[0:2]+input[3:5]+input[6:8]
 
@@ -187,7 +211,7 @@ while True:
             y = 4 - n
 
             print(" ############ TRIANGULATION ALGORITHM ################ ")
-            print('Coordiantes of' , b_mac, 'Are :(', x, ',', y, ')')
+            print('Coordinates of' , b_mac, 'Are :(', x, ',', y, ')')
 
         except Exception as e:
             print("Error! Need 3 ESPs to calculate the coordinate of the beacon!" , e)
@@ -288,7 +312,7 @@ while True:
             if y1 < 4:
                 encodedid = convertBase10ToBase64(getID(b_url))
                 lane = str(getLane(x1))
-                encodedpan = convertBase10ToBase64(generatePAN())
+                encodedpan = convertPanToBase64(generatePAN())
                 encodedtime = convertBase10ToBase64(time2String(getTime()))
 
                 final_url = encodedid + lane + encodedpan + encodedtime
