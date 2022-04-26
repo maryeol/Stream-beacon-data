@@ -98,15 +98,25 @@ idf = pd.DataFrame({'ip': ['A', 'B', 'C', 'A', 'B', 'C'],
 #     b = '10'
 #     df = idf2.drop((a, b), axis=0)
 #     print(df)
+Ec2zrq
+Ec2_jljSRgEQ4zn5
 
-
-
-
+Ec
+2
+_jljSRgEQ4
+zn5
+8H78Mi9SG00
+8H78Mi9SG00
+XCID-
+9k2_f-
 #3C:61:05:32:28:DA
-
-
-
-
+14y4fj08Xsj
+14y4fj08Xsj
+14y4fj08Xs0
+14y4fj08Xs0
+14y4fj08Xs0
+14y4fj08Xs0
+14y4fj08Xsj
 # print(idf.index)
 # print(idf.loc["i1"]['data'])
 #
