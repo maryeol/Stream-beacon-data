@@ -114,7 +114,7 @@ sock = socket.socket(socket.AF_INET,  # Internet
                      socket.SOCK_DGRAM)  # UDP
 sock.bind((UDP_IP, UDP_PORT))
 
-
+#boucle
 #t1 = datetime.now()
 #while (datetime.now()-t1).seconds <= 20:  #run for 5 seconds
 while True:
