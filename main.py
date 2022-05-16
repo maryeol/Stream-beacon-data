@@ -274,8 +274,8 @@ while True:
 
             # First look at whether there are intersections between the three circles.
             # If 1、2 no intersection between the two circles
-            while ( (not tools.isTwoCircleIntersect(circle1, circle2)) and (not tools.isTwoCircleIntersect(circle1, circle2))
-                and (not tools.isTwoCircleIntersect(circle1, circle2)) ):
+            while ( (not tools.isTwoCircleIntersect(circle1, circle2)) and (not tools.isTwoCircleIntersect(circle1, circle3))
+                and (not tools.isTwoCircleIntersect(circle3, circle2)) ):
                 if not tools.isTwoCircleIntersect(circle1, circle2):
                     # Try increasing the radius of a circle，Who is bigger and who increases
                     if circle1.r > circle2.r:
@@ -407,8 +407,8 @@ while True:
 
             # First look at whether there are intersections between the three circles.
             # If 1、2 no intersection between the two circles
-            while ( (not tools.isTwoCircleIntersect(circle1, circle2)) and (not tools.isTwoCircleIntersect(circle1, circle2))
-                and (not tools.isTwoCircleIntersect(circle1, circle2)) ):
+            while ( (not tools.isTwoCircleIntersect(circle1, circle2)) and (not tools.isTwoCircleIntersect(circle1, circle3))
+                and (not tools.isTwoCircleIntersect(circle2, circle3)) ):
                 if not tools.isTwoCircleIntersect(circle1, circle2):
                     # Try increasing the radius of a circle，Who is bigger and who increases
                     if circle1.r > circle2.r:
